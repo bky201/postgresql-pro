@@ -1,3 +1,21 @@
+
+01 - Installing the Chinook Database
+Download the Chinook PostgreSql database
+source
+wget https://raw.githubusercontent.com/lerocha/chinook-database/master/ChinookDatabase/DataSources/Chinook_PostgreSql.sql
+Access the Postgres CLI
+psql
+Create the new "chinook" database
+CREATE DATABASE chinook;
+View existing tables on the database
+\l
+Switch between databases
+\c postgres (switch to the database called "postgres")
+\c chinook (switch to the database called "chinook")
+Install / Initialize the downloaded Chinook SQL database
+\i Chinook_PostgreSql.sql (takes several minutes)
+
+*******************************************************************
 02 - PostgreSQL from the Command Line
 
 Quit the entire Postgres CLI
@@ -33,8 +51,10 @@ Copy the results into a .CSV file
 Copy the results into a .JSON file
 Line 1: \o test.json
 Line 2: SELECT json_agg(t) FROM  (SELECT * FROM "Track" WHERE "Composer" = 'Queen') t;
+********************************
 
 
+************************************************************
 03 - Installing the Libraries and Setting Up
 
 -Install the "psycopg2" Python package
@@ -48,6 +68,30 @@ touch sql-psycopg2.py
 -install the correct version of SQL Alchemy
 pip3 install sqlalchemy==1.4.46
 
+********************************************************************
+
+04 - Introducing an ORM
+Install the "SQLAlchemy" Python package
+pip3 install SQLAlchemy
+
+**********************************************************************
+05 - Running Basic Queries
+Create a new file called "sql-expression.py"
+touch sql-expression.py
+Query 1 - select all records from the "Artist" table
+select_query = artist_table.select()
+Query 2 - select only the "Name" column from the "Artist" table
+select_query = artist_table.select().with_only_columns([artist_table.c.Name])
+Query 3 - select only 'Queen' from the "Artist" table
+select_query = artist_table.select().where(artist_table.c.Name == "Queen")
+Query 4 - select only by 'ArtistId' #51 from the "Artist" table
+select_query = artist_table.select().where(artist_table.c.ArtistId == 51)
+Query 5 - select only the albums with 'ArtistId' #51 on the "Album" table
+select_query = album_table.select().where(album_table.c.ArtistId == 51)
+Query 6 - select all tracks where the composer is 'Queen' from the "Track" table
+select_query = track_table.select().where(track_table.c.Composer == "Queen")
+
+***************************************************************************
 
 06 - Introducing Class-Based Models
 
@@ -100,7 +144,7 @@ for track in tracks:
         sep=" | "
     )
 
-
+***********************************************************************
 07 - CodeAlong: Create and Read
 
 -Create a new file called "sql-crud.py"
